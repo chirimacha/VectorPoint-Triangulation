@@ -1,2 +1,2 @@
 # VectorPoint-Triangulation
-Repository for public code for VectorPoint with triangulation
+Public repository for VectorPoint App with triangulation feature.
