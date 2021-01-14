@@ -1,0 +1,12 @@
+name: vectorpoint
+title:
+username:
+account: epi1
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 237860
+bundleId: 2545463
+url: https://epi1.shinyapps.io/vectorpoint/
+when: 1572298375.30603
+asMultiple: FALSE
+asStatic: FALSE

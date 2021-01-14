@@ -1,0 +1,12 @@
+name: vectorpoint-test
+title: vectorpoint-test
+username:
+account: epi1
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 596129
+bundleId: 1729135
+url: https://epi1.shinyapps.io/vectorpoint-test/
+when: 1543510096.31693
+asMultiple: FALSE
+asStatic: FALSE

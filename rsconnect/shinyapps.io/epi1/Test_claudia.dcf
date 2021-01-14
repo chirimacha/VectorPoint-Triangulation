@@ -1,0 +1,12 @@
+name: test_claudia
+title:
+username:
+account: epi1
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 352790
+bundleId: 1405998
+url: https://epi1.shinyapps.io/Test_claudia/
+when: 1527885812.27671
+asMultiple: FALSE
+asStatic: FALSE

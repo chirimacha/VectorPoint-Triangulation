@@ -1,0 +1,9 @@
+name: shiny
+account: epi1
+server: shinyapps.io
+appId: 177341
+bundleId: 812809
+url: https://epi1.shinyapps.io/shiny/
+when: 1493777658.93723
+asMultiple: FALSE
+asStatic: FALSE

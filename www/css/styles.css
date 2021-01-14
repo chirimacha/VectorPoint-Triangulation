@@ -1,0 +1,480 @@
+input[type="number"] {
+  max-width: 80%;
+}
+
+div.outer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Customize fonts */
+body, label, input, button, select { 
+  font-family: 'Helvetica Neue', Helvetica;
+  font-weight: 200;
+}
+h1, h2, h3, h4 { font-weight: 400; }
+
+#controls {
+  /* Appearance */
+  background-color: white;
+  padding: 0 20px 20px 20px;
+  cursor: move;
+  /* Fade out while not hovering */
+  opacity: 0.65;
+  zoom: 0.9;
+  transition: opacity 500ms 1s;
+}
+
+button {
+  overflow: visible;
+}
+
+#controls:hover {
+  /* Fade in while hovering */
+  opacity: 0.95;
+  transition-delay: 0;
+}
+
+/* Position and style citation */
+#cite {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 12px;
+}
+
+/* If not using map tiles, show a white background */
+.leaflet-container {
+  background-color: white !important;
+}
+
+/* Allows pop-up modal to not be greyed out*/
+.modal-backdrop {
+  z-index: 0;
+}
+
+#login { 
+  margin: auto;
+}
+
+/*******************/
+/*AGREGADO POR GIAN*/
+/*******************/
+/*Volver mayusculas*/
+#L, #V {
+  text-transform: uppercase;
+}
+input[type="number"] {
+  max-width: 100%;
+}
+
+#enterData {
+  margin-top: 5px;
+}
+.ver-mas {
+  display: none;
+}
+/*Poner los colores de la leyenda en cirdulo*/
+.legend i {
+  border-radius: 50%;
+}
+.info.legend.leaflet-control {
+    margin-bottom: 50px;
+}
+.info {
+  background: #f2f2f2;
+}
+
+/*Estilos de la tabla de inspeccion*/
+.tabla {
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  margin: 0 auto 15px;
+  padding: 8px 0 0;
+  text-align: center;
+}
+.tabla .opciones h6 {
+  font-size: 0;
+  margin-top: 18px;
+}
+.tabla h5 {
+  margin-top: 0;
+}
+.tabla .form-group {
+  margin-bottom: 0;
+}
+.tabla .form-group .checkbox {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+.tabla .opciones,
+.tabla .lugar_inspeccion,
+.tabla .chiris,
+.tabla .rastros {
+    display: inline-block;
+    padding: 0;
+    vertical-align: top;
+}
+
+.tabla .opciones {
+  width: 18%;
+}
+.tabla .chiris,
+.tabla .rastros,
+.tabla .lugar_inspeccion {
+  width: 26%;
+}
+
+/*animales*/
+.animales-opt .form-group {
+  display: inline-block;
+  vertical-align: top;
+  width: 16.8%;
+}
+.animales-opt .form-group:last-child {
+  width: 12%;
+}
+
+/*FILTRO*/
+.btn-filter {
+  padding-top: 24px;
+}
+
+.content-filter {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.container-fluid > .col-sm-8 {
+  width: 100%;
+}
+
+tbody tr:nth-child(2n+1) {
+  background: rgb(240, 247, 240);
+}
+
+.num-elements {
+  margin-bottom: 15px;
+}
+.group-1, .group-2, .group-3, .group-4 {
+  margin-top: 20px;
+}
+
+#reportUser {
+	margin-top: 5px;
+}
+
+.show-legend {
+  display: none;
+}
+
+/*Ocultar span de reconeccion*/
+#shiny-notification-reconnect .shiny-notification-content-text {
+  display: none;
+}
+
+/*Redes*/
+#network {
+  padding: 20px;
+  margin-top: 200px;
+  text-align: center;
+  top: 0px;
+  position: relative;
+}
+#networkOnline,
+#networkOffline {
+    display: block;
+    margin: 20px auto;
+    width: 100%;
+    padding: 10px;
+}
+
+.container-fluid > .col-sm-8 > div:nth-child(2),
+.container-fluid > .col-sm-8 > div:nth-child(3),
+.container-fluid > .col-sm-8 > div:nth-child(4) {
+  display: none;
+}
+
+#quit {
+  background-color: red;
+  margin-top: 10px;
+}
+
+/*Eliminando boton que no se sabe para que sirve*/
+#inspectButton {
+  display: none;
+}
+
+@media only screen and (max-width: 768px) {
+  .provincia, .distrito, .localidad, .vivienda, .fecha, .caract_predio, 
+  .tot_intra, .tot_peri, .rastros, .personas_predio {
+    display: inline-block;
+    width: 49%;
+    vertical-align: top;
+  }
+
+  .rastros, .personas_predio{
+    vertical-align: top;
+  }
+
+  #network {
+    margin-top: 50%;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+
+  /*
+   *+++++  Menu +++++
+   */
+  .img-menu {
+    background-image: url("menu_movil.png");
+    width: 45px;
+    height: 45px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    vertical-align: top;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    left: 0;
+  }
+  .close-menu {
+    background-image: url("close.png");
+    background-size: 80%;
+    background-position-x: 6px;
+    background-position-y: 4px;
+    background-color: #fff;
+  }
+  .nav-tabs {
+    display: inline-block;
+    width: 180px;
+    min-height: 45px;
+    vertical-align: top;
+    z-index: 4;
+    position: absolute;
+    border: 1px solid #ddd;
+    border-radius: 0 5px 5px 0;
+    background-color: #fff;
+    top: 0;
+    left: 45px;
+  }
+  .nav-tabs>li>a,
+  .nav-tabs>li.active > a {
+    border: none;
+    padding: 2px 10px;
+  }
+  .nav-tabs>li {
+    display: none;
+    width: 100%;
+  }
+  .nav-tabs>li.active {
+    display: block;
+  }
+  .nav-tabs>li.active>a:hover,
+  .nav-tabs>li.active>a:focus {
+    color: #337ab7;
+    border: none;
+  }
+  .nav-tabs>li.show-menu {
+    display: block;
+  }
+  .container-fluid > .col-sm-8 {
+    position: absolute;
+    right: 0;
+  }
+  .leaflet-top .leaflet-control {
+    top: 36px;
+  }
+  /*+++++++++++++++++++*/
+
+  /*Boton vermas*/
+  #controls {
+    top: 0 !important;
+    padding: 10px 5px;
+    right: 0 !important;
+    width: 0;
+    transition: width 0.3s linear 0.3s;
+    overflow: hidden;
+    opacity: 1;
+    height: 194px;
+    z-index: 4;
+  }
+
+  #enterData,
+  #reportUser,
+  #quit {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .viv-volver .table,
+  .viv-ingresadas .table {
+    	margin: 0 auto 20px;
+    }
+
+  #reportUser {
+  	margin: 5px 0;
+  }
+
+  #controls .form-group.shiny-input-container {
+    margin-bottom: 10px;
+    width: 100% !important;
+  }
+
+  #controls .form-group.shiny-input-container .control-label {
+    display: none;
+  }
+
+  #load, #gps {
+    width: 48% !important;
+  }
+
+  /*Ver mas*/
+  .ver-mas {
+    display: block;
+    text-align: center;
+    border: 1px solid #dedede;
+    border-radius: 5px 0 0 5px;
+    color: #fff;
+    background: #357ebd;
+    height: 176px;
+    width: 30px;
+    position: fixed;
+    right: 0;
+    top: -1px;
+    font-size: 42px;
+    padding-top: 56px;
+    transition:right 0.3s linear 0.3s;
+    z-index: 5;
+  }
+  .ver-mas.custom-extend {
+    right: 113px;
+  }
+  #controls.custom-extend {
+    width: 130px;
+  }
+  /***/
+
+  .mostrar-inline {
+    display: inline-block !important;
+  }
+  .mostrar {
+    display: block !important;
+  }
+
+  .tabla .opciones,
+  .tabla .rastros {
+    width: 18%;
+  }
+  .tabla .chiris {
+    width: 16%;
+  }
+  .tabla .lugar_inspeccion {
+    width: 43%;
+  }
+
+  /*animales*/
+  .animales-opt, .animales-cant {
+    width: 49%;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .animales-opt .form-group {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .animales-opt .form-group:first-child {
+    margin-top: 0;
+  }
+
+  .animales-opt .form-group .checkbox{
+    margin: 0;
+  }
+
+  .animales-cant {
+    margin-top: 32px;
+  }
+
+  .animales-cant .col-sm-2 {
+    height: 36px;
+    margin: 5px 0;
+  }
+
+  /****  Legend *****/
+  .leaflet-bottom.leaflet-left {
+    pointer-events: auto;
+    z-index: 1001;
+  }
+  .info.legend {
+    margin-bottom: 0px;
+    overflow: hidden;
+    width: 161px;
+    -webkit-transition: all linear 0.3s;
+    -moz-transition: all linear 0.3s;
+    transition: all linear 0.3s;
+    height: 122px;
+  }
+  .show-legend {
+    width: 25px;
+    height: 122px;
+    background: #02bb24;
+    border-radius: 0 5px 5px 0;
+    padding-top: 30px;
+    font-size: 40px;
+    color: #fff;
+  }
+  .info.legend.custom-hide {
+    width: 0;
+    padding: 0;
+  }
+  .leaflet-left .leaflet-control {
+    margin-left: 0;
+  }
+  /**********************/
+
+  .btn-default {
+    border: 1px solid #dedede;
+    border-radius: 5px 0 0 5px;
+    color: #fff;
+    background: #357ebd;
+  }
+
+}
+
+@media only screen and (max-width: 480px) {
+  
+  .provincia, .distrito, .localidad, .vivienda, .fecha, .caract_predio, 
+  .tot_intra, .tot_peri, .rastros, .personas_predio {
+    width: 100%;
+  }
+
+  .info.legend.leaflet-control {
+    margin-bottom: 0;
+  }
+
+  .animales-opt {
+    width: 60%;
+  }
+  .animales-cant {
+    margin-right: 0;
+    margin-left: 0;
+    width: 39%;
+  }
+  .animales-cant .col-sm-2:last-child {
+    margin-bottom:25px;
+  }
+
+  #buscando img {
+    width: 100%;
+  }
+  
+}

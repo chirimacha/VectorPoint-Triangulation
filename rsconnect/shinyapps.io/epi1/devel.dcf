@@ -1,0 +1,12 @@
+name: devel
+title:
+username:
+account: epi1
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 156741
+bundleId: 1697358
+url: https://epi1.shinyapps.io/devel/
+when: 1542074925.12631
+asMultiple: FALSE
+asStatic: FALSE

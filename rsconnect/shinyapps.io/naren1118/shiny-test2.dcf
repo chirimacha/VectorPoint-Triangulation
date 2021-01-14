@@ -1,0 +1,12 @@
+name: shiny-test2
+title: shiny-test
+username:
+account: naren1118
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 597891
+bundleId: 1731674
+url: https://epi1.shinyapps.io/shiny-test2/
+when: 1543600084.18627
+asMultiple: FALSE
+asStatic: FALSE
