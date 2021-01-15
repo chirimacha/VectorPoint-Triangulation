@@ -9,7 +9,7 @@ library(png)
 userParameters <- NULL
 
 dbGlobalConfig = list(
-  "host" = "chirimacha-main.cojvkfkjmqcg.us-west-2.rds.amazonaws.com",
+  "host" = "",
   "port" = 3306,
   "user"             = "",
   "password"         = "",
