@@ -11,10 +11,10 @@ userParameters <- NULL
 dbGlobalConfig = list(
   "host" = "chirimacha-main.cojvkfkjmqcg.us-west-2.rds.amazonaws.com",
   "port" = 3306,
-  "user"             = "masterUser",
-  "password"         = "ChagasShiny1!1",
-  "databaseName"     = "Demo",
-  "authDatabaseName" = 'Demo',    #potentially a separate DB from the databases for data
+  "user"             = "",
+  "password"         = "",
+  "databaseName"     = "",
+  "authDatabaseName" = '',    #potentially a separate DB from the databases for data
   
   #Lista de usuario
   "userTable"        = "USERS",
