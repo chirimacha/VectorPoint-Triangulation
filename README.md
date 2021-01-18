@@ -10,4 +10,4 @@ Username:DEMO
 Password: 123
 
 # Analysis Code and Supplementary data 
-In the link "https://github.com/chirimacha/VectorPoint-Triangulation/tree/main/Paper%20Supplementary%20data", you can find data was used for analysis in each trial, and codes for reproducibility.
+In the link "https://github.com/chirimacha/VectorPoint-Triangulation/tree/main/Paper%20Supplementary%20data", you can find data and codes for reproducibility that were used for the article "Incentivizing Multiple Objectives in Active Surveillance for Urban Disease Vectors"
