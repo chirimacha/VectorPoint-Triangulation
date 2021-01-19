@@ -270,25 +270,30 @@ shinyServer(function(input, output, session) {
   ## Interactive Map ##
   # Create the map
   output$map <- renderLeaflet({
-    #leaflet() %>%
    #    
    # leaflet(options = leafletOptions(maxZoom=19,preferCanvas = TRUE)) %>%
    #      addTiles(urlTemplate = "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
    #               attribution = 'OpenStreetMap contributors'
    #     ) %>%
 
-    leaflet(options = ) %>%
-      addTiles(urlTemplate = "//{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
-              attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              ) %>%
-
-    #addTiles(urlTemplate = "//{s}.tiles.mapbox.com/v3/jcheng.mqap-5ebohr46/{z}/{x}/{y}.png") %>%
-      #  addProviderTiles(providers$Stamen.TonerLite, options = providerTileOptions(noWrap = TRUE) ) %>%
-      setView(
+   map<- leaflet() %>%
+      # addTiles(urlTemplate = "//{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+      #         attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      #         ) %>%
+      addTiles()%>%
+     addProviderTiles(providers$CartoDB.PositronNoLabels)%>%
+   
+     setView(
         lng = mean(-71.55001667),
         lat = mean(-16.39249883),
         zoom = 16
       )
+      
+      
+      #addProviderTiles(providers$Esri.WorldImagery)%>%
+      #addTiles(urlTemplate = "//{s}.tiles.mapbox.com/v3/jcheng.mqap-5ebohr46/{z}/{x}/{y}.png") %>%
+      # addProviderTiles(providers$Stamen.TonerLite, options = providerTileOptions(noWrap = TRUE) ) %>%
+      
     
   })
   
@@ -307,13 +312,13 @@ shinyServer(function(input, output, session) {
     
     ## CAUSED PROBLEMS BEFORE, SIMPLE WORKAROUND HERE
     # display best polygon (incentives experiment)
-    copy <- sessionData$searchdata#loadSearchData(tableName=groupParameters$DATA_ID) 
+    copy <- sessionData$searchdata#loadSearchData(tableName=groupParameters$DATA_ID)
     dataInspecciones <- findInspecciones(copy)
     sessionData$searchdata <- as.data.table(sessionData$searchdata)
     listTriangulation <- getTriangulation(copy, dataInspecciones)
     polyDF <- listTriangulation[[1]]
     polyVertices <- listTriangulation[[2]]
-    
+
     #iBestTri <- which(polyDF$nHouseUninspect == max(polyDF$nHouseUninspect))[1]
     
     #searchdata: previously loaded at log in

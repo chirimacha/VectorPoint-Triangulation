@@ -10,6 +10,7 @@ userParameters <- NULL
 
 dbGlobalConfig = list(
   "host" = "",
+  "host"="",
   "port" = 3306,
   "user"             = "",
   "password"         = "",
