@@ -7,7 +7,7 @@ LoginForm <- div(
   bottom = "auto",
   width = "auto",
   height = "auto",
-  h3('VectorPoint\n'),
+  h3('VectorPoint Triangulación\n'),
   #h4('Version 1.0\n'),
   h5(Sys.Date()),
   textInput("username", label = NULL, placeholder = "Usuario"),

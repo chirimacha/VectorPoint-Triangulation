@@ -13,9 +13,6 @@ shinyServer(function(input, output, session) {
   
   #Variables globales
   usernameCheck <- 'Failure'
-  networkCheck <- 'Failure'
-  reconnected <- FALSE
-  var_sim_searches <- NULL
   #The authenatication system:
   sessionData     <- reactiveValues()
   
@@ -25,61 +22,25 @@ shinyServer(function(input, output, session) {
   observeEvent(input$userLogin,{
     #Almacena TRUE si es un usuario que existe y coincide la contraseña
     loginSuccess <- Login(input$username, input$password)
-    reconnected <<- (input$reconnected == "true")
     
     if("usuario_correcto"==loginSuccess[[1]]) {
       
       usernameCheck <- 'Success'
       
-      #Variable para dar permiso al administrador
-       if ("ADMIN"== loginSuccess[[2]]) {
-         admin_user <- 'Success'
-       
-         data_mysql <- Report();
-       
-        output$casa_regular <- renderText({paste("Casa regular:",data_mysql[["casa_regular"]])})
-        output$des <- renderText({paste("Deshabitadas:",data_mysql[["des"]])})
-         output$lp <- renderText({paste("LP:",data_mysql[["lp"]])})
-         output$lv <- renderText({paste("LV:",data_mysql[["lv"]])})
-         output$c <- renderText({paste("Cerradas:",data_mysql[["c"]])})
-         output$inspeccion <- renderText({paste("Inspeccionadas:",data_mysql[["inspeccion"]])})
-         output$r <- renderText({paste("Renuentes:",data_mysql[["r"]])})
-         output$v <- renderText({paste("V1:",data_mysql[["v"]])})
-         output$num_elements <- renderText({paste("No DE REGISTROS:",data_mysql[["num_elements"]])})
-       
-         output$valores <- renderDataTable({data_mysql[["data"]]},
-                                           options = list(
-                                             pageLength = 10
-                                           )
-         )
-       
-         output$adminUser <- renderText({admin_user})
-         outputOptions(output, 'adminUser', suspendWhenHidden = FALSE)  #keeps on top
-       
-       } else {
-       admin_user <- "Failure"
-
-        ###############
-        #Leyendo el catchment area
-        sessionData$searchdata <- as.data.table(read.csv(paste("catchment_area/",loginSuccess[[3]],".csv", sep = ""), stringsAsFactors = FALSE, sep = " "))
-        #sessionData$searchdata <- as.data.table(read.csv(paste("catchment_area/",loginSuccess[[3]],".csv",sep = ""), stringsAsFactors = FALSE))
-
-        sessionData$searchdata <- sessionData$searchdata[, LATITUDE:=as.double(LATITUDE)] 
-        sessionData$searchdata <- sessionData$searchdata[, LONGITUDE:=as.double(LONGITUDE)] 
-        sessionData$searchdata <- sessionData$searchdata[, probability:=as.double(probability)]
-        
-        #Obteniendo solo la columna de unicode
-        catchment_area <- as.data.frame(sessionData$searchdata$UNICODE, stringsAsFactors=FALSE)
-        
-        sessionData$localities <- unique(sessionData$searchdata$codeLoc)
-        sessionData$houseId    <- '' #set when the user selects a house
-        sessionData$palForRisk <- function(probab){return('#dummy')}
-      #  if(!reconnected)
-      #    updateSelectizeInput(session, "locality", choices = sessionData$localities, server = TRUE)
-        
-        ###############
-        var_sim_searches    <<- loginSuccess[[4]]
-       }
+      ###############
+      #Leyendo el catchment area
+      sessionData$searchdata <- as.data.table(read.csv(paste("catchment_area/",loginSuccess[[3]],".csv", sep = ""), stringsAsFactors = FALSE, sep = " "))
+      
+      sessionData$searchdata <- sessionData$searchdata[, LATITUDE:=as.double(LATITUDE)] 
+      sessionData$searchdata <- sessionData$searchdata[, LONGITUDE:=as.double(LONGITUDE)] 
+      sessionData$searchdata <- sessionData$searchdata[, probability:=as.double(probability)]
+      
+      #Obteniendo solo la columna de unicode
+      catchment_area <- as.data.frame(sessionData$searchdata$UNICODE, stringsAsFactors=FALSE)
+      
+      sessionData$localities <- unique(sessionData$searchdata$codeLoc)
+      sessionData$houseId    <- '' #set when the user selects a house
+      sessionData$palForRisk <- function(probab){return('#dummy')}
       
     } else if ("clave_incorrecta"==loginSuccess[[1]]) {
       #Mensaje cuando falla la clave ingresada
@@ -100,22 +61,6 @@ shinyServer(function(input, output, session) {
     outputOptions(output, 'validUser', suspendWhenHidden = FALSE)  #keeps on top
     
   })
-  
-  #Boton online
-  observeEvent(input$networkOnline,{
-    networkCheck <- 'Success'
-    output$networkCheck <- renderText({networkCheck})
-    outputOptions(output, 'networkCheck', suspendWhenHidden = FALSE)  #keeps on top
-  })
-  
-  #Boton offline
-  observeEvent(input$networkOffline,{
-    networkCheck <- 'Success'
-    output$networkCheck <- renderText({networkCheck})
-    outputOptions(output, 'networkCheck', suspendWhenHidden = FALSE)  #keeps on top
-  })
-  
-  output$inspectButton <- renderUI({})
   
   #' Submit of inspection report
   observeEvent(input$inputSubmit, {
@@ -271,12 +216,12 @@ shinyServer(function(input, output, session) {
   # Create the map
   output$map <- renderLeaflet({
    #    
-   # leaflet(options = leafletOptions(maxZoom=19,preferCanvas = TRUE)) %>%
+   leaflet(options = leafletOptions(maxZoom=19,preferCanvas = TRUE)) %>%
    #      addTiles(urlTemplate = "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
    #               attribution = 'OpenStreetMap contributors'
    #     ) %>%
 
-   map<- leaflet() %>%
+   #map<- leaflet() %>%
       # addTiles(urlTemplate = "//{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
       #         attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       #         ) %>%
@@ -423,14 +368,6 @@ shinyServer(function(input, output, session) {
     
     PREDICTED_PROBAB <- sessionData$searchdata$probability[sessionData$searchdata$UNICODE==sessionData$houseId]
     
-    if(var_sim_searches== 0) {
-      output$inspectButton <- renderUI({})
-      output$houseProbab <- renderText( sprintf('probab: %.2f', PREDICTED_PROBAB)  )
-      #wishlist: show in popup
-    } else {
-      output$inspectButton <- renderUI(actionButton("sim_inspect_house_button", label="", icon = icon("search", "fa-.5x")))
-      output$houseProbab <- renderText({paste("")})
-    }
     session$sendCustomMessage(type = 'action-message',
                               message = "buscando_false")
   })
@@ -494,43 +431,6 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage(type = 'action-message',
                               message = "buscando_false")
     #http://stackoverflow.com/questions/24265980/reset-inputs-button-in-shiny-app
-  })
-  
-  #Accion al presionar el boton REPORTE
-  observeEvent(input$reportUser,{
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_true")
-    #VIVIENDAS INGRESADAS EN EL DIA
-    viv_ingresadas <- HouseRegisterDay(Sys.Date(),input$username);
-    #viv_ingresadas <- HouseRegisterDay("2017-08-24",input$username);
-    
-    if (nrow(viv_ingresadas)==0) {
-      viv_ingresadas <- "Aun no se ingresaron viviendas el dia de hoy"
-    }
-    
-    #Enviando los datos de volver a UI.R
-    output$viv_ingresadas <- renderTable({ viv_ingresadas })
-    
-    #VIVIENDAS QUE SE TIENE QUE VOLVER
-    viv_volver <- HouseGoBack(Sys.Date()-1,input$username);
-    #viv_volver <- HouseGoBack("2017-08-23",input$username);
-    
-    if (nrow(viv_volver)==0) {
-      viv_volver <- "No hay viviendas pendientes para volver el dia de hoy"
-    } else {
-      aux <- viv_ingresadas
-      viv_volver$VIV_VOLVER <- 1
-      aux$VIV_INGRESADAS <- 1
-      viv_volver <- merge(viv_volver, aux, all.x=TRUE)
-      viv_volver$VOLVER <- "pendiente"
-      viv_volver$VOLVER[(1==viv_volver$VIV_VOLVER & 1==viv_volver$VIV_INGRESADAS)] <- "VISITADA"
-      viv_volver <- viv_volver[,c("UNI_CODE", "USER_NAME", "VOLVER")]
-    }
-    
-    #Enviando los datos de volver a UI.R
-    output$viv_volver <- renderTable({ viv_volver })
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_false")
   })
   
   getLocalityData <- function(){
@@ -737,74 +637,6 @@ shinyServer(function(input, output, session) {
     #updateCheckboxInput(session, "testData", "Prueba", FALSE)
   }
   
-  #REPORTE para admin
-  Report <- function(date=NULL){
-    result <- list()
-    result[["data"]] <- "No se encontraron datos"
-    result[["casa_regular"]] <- 0
-    result[["des"]] <- 0
-    result[["lp"]] <- 0
-    result[["lv"]] <- 0
-    result[["c"]] <- 0
-    result[["inspeccion"]] <- 0
-    result[["r"]] <- 0
-    result[["v"]] <- 0
-    
-    data <- load_data_mysql(databaseName = dbGlobalConfig$databaseName,
-                            tableName    = dbGlobalConfig$inspectionsTable, date)
-    
-    num_elements <- nrow(data)
-    if (num_elements != 0) {
-      casa_regular <- nrow(data[data$CARACT_PREDIO == "casa_regular",])
-      des <-   nrow(data[data$CARACT_PREDIO == "DES",])
-      lp <- nrow(data[data$CARACT_PREDIO == "LP",])
-      lv <- nrow(data[data$CARACT_PREDIO == "LV",])
-      c <- nrow(data[data$STATUS_INSPECCION == "C",])
-      inspeccion <- nrow(data[data$STATUS_INSPECCION == "inspeccion",])
-      r <- nrow(data[data$STATUS_INSPECCION == "R",])
-      v <- nrow(data[grepl("V1",data$MOTIVO_VOLVER, fixed = TRUE),])
-      
-      result[["data"]] <- data
-      result[["casa_regular"]] <- casa_regular
-      result[["des"]] <- des
-      result[["lp"]] <- lp
-      result[["lv"]] <- lv
-      result[["c"]] <- c
-      result[["inspeccion"]] <- inspeccion
-      result[["r"]] <- r
-      result[["v"]] <- v
-      result[["num_elements"]] <- num_elements
-    }
-    
-    return(result)
-  }
-  
-  #FILTRO para administrador
-  observeEvent(input$btn_filter, {
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_true")
-    
-    if(length(input$filter_start)) {
-      data_mysql <- Report(input$filter_start)
-    } else {
-      data_mysql <- Report()
-    }
-    
-    output$casa_regular <- renderText({paste("Casa regular:",data_mysql[["casa_regular"]])})
-    output$des <- renderText({paste("Deshabitadas:",data_mysql[["des"]])})
-    output$lp <- renderText({paste("LP:",data_mysql[["lp"]])})
-    output$lv <- renderText({paste("LV:",data_mysql[["lv"]])})
-    output$c <- renderText({paste("Cerradas:",data_mysql[["c"]])})
-    output$inspeccion <- renderText({paste("Inspeccionadas:",data_mysql[["inspeccion"]])})
-    output$r <- renderText({paste("Renuentes:",data_mysql[["r"]])})
-    output$v <- renderText({paste("V1:",data_mysql[["v"]])})
-    output$num_elements <- renderText({paste("No DE REGISTROS:",data_mysql[["num_elements"]])})
-    
-    output$valores <- renderDataTable({data_mysql[["data"]]})
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_false")
-  })
-  
   #Desconectar
   observeEvent(input$logout,{
     
@@ -824,7 +656,6 @@ shinyServer(function(input, output, session) {
     output$houseId <- renderText({paste("")})
     output$userMessage <- renderText({paste("")})
     output$validUser <- renderText({""})
-    output$networkCheck <- renderText({""})
   })
   #Salir
   observeEvent(input$quit,{
@@ -844,93 +675,6 @@ shinyServer(function(input, output, session) {
     output$houseId <- renderText({paste("")})
     output$userMessage <- renderText({paste("")})
     output$validUser <- renderText({""})
-    output$networkCheck <- renderText({""})
   })  
   
-  # # #Recibe json del browser
-   observeEvent(input$browser_msg,{
-     if(nchar(input$browser_msg)>0) {
-       type <- input$browser_msg$type
-       if (type == 'post') {
-         method <- input$browser_msg$method
-         data <- input$browser_msg$data
-         if (method == 'sync') {
-          #save to database
-           for (i in 1:length(data)) {
-             for (j in 1:length(data[[i]]$data)){
-              if (data[[i]][[1]][[j]]=="NA")
-                 data[[i]][[1]][[j]] <- NA
-             }
-             save_search_data_mysql(data[[i]]$data, TABLE_NAME = data[[i]]$dbtable)
-            response <- list(status = 'success')
-             session$sendCustomMessage(type = 'post-response-progress',
-                                       message = toJSON(response, auto_unbox = TRUE, digits = 10))
-           }
-           response <- list(status = 'success')
-           session$sendCustomMessage(type = 'post-response',
-                                     message = toJSON(response, auto_unbox = TRUE, digits = 10))
-         } else if (method == 'mordedura') {
-            mord <- read.csv("mordeduras_adults_LIEZdist_27Ago18.csv")
-            mord <- cbind(mord, postaCercana = unlist(data$postaCercana))
-            mord <- cbind(mord, postaCercanaDist = unlist(data$postaCercanaDist))
-            write.csv(mord,file = "mordeduras_x_postas.csv",row.names = FALSE)
-           #write.table( data.frame(data), 'mordeduras_x_postas.csv'  , append= T, sep=',' )
-           response <- list(status = 'success')
-            session$sendCustomMessage(type = 'post-response',
-                                      message = toJSON(response, auto_unbox = TRUE, digits = 10))
-          }
-        } else if (type == 'get') {
-          method <- input$browser_msg$method
-          data <- input$browser_msg$data
-          if (method == 'sync') {
-            #read database and csv
-            response <- getOfflineData(data$username,data$password)
-           session$sendCustomMessage(type = 'get-response',
-                                      message = toJSON(response, auto_unbox = TRUE, digits = 10))
-          } else if (method == "mordedura") {
-            response <- list()
-            response$mordeduras <- read.csv("mordeduras_adults_LIEZdist_27Ago18.csv")
-            response$postas <- read.csv("PUESTOS DE SALUD AQP.csv", sep = ";")
-            response$status <- "success"
-            session$sendCustomMessage(type = 'get-response',
-                                      message = toJSON(response, auto_unbox = TRUE, digits = 10))
-        }
-      }
-     }
-  })
-  # 
-  # # # 
-   getOfflineData <- function(username, password) {
-     data <- list()
-     loginSuccess <- Login(username, password)
-     
-     if("usuario_correcto"==loginSuccess[[1]]) {
-       data$usernameCheck = 'Success'
-       
-       #Leyendo el catchment area
-       data$sessionData <- list()
-       data$sessionData$searchdata <- as.data.table(read.csv(paste("catchment_area/",loginSuccess[[3]],".csv",sep = ""), stringsAsFactors = FALSE, sep = " "))
-       #data$sessionData$searchdata <- as.data.table(read.csv(paste("catchment_area/",loginSuccess[[3]],".csv", sep = ""), stringsAsFactors = FALSE))
-       
-       data$sessionData$localities <- unique(data$sessionData$searchdata$codeLoc)
-       
-       #clonando ultimas inspecciones
-        var_locality <<- data$sessionData$localities
-        houseinLoc <- data$sessionData$searchdata[codeLoc %in% (var_locality)]
-        data$lastInspections <- read_past_inspections(databaseName=dbGlobalConfig$authDatabaseName,UNICODE=houseinLoc$UNICODE)
-       
-       #triangulation
-       copy <- data$sessionData$searchdata
-       data$sessionData$inspected <- findInspecciones(copy)
-       
-       data$loginSuccess <- loginSuccess
-       
-       data$status <- "success"
-       
-     } else {
-       data$status <- "auth_failure"
-     }
-     
-     return(data)
-    }
  })
