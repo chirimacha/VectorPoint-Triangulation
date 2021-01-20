@@ -41,12 +41,6 @@ library(shinyjs)#Para activar funcion click
 shinyUI(fluidPage(
   mainPanel(
     tags$head(tags$script(src="custom.js")),
-    tags$head(tags$script(src="gomap.js")),
-    tags$head(tags$script(src="leaflet-offline.js")),
-    tags$head(tags$script(src="localforage.js")),
-    tags$head(tags$script(src="localforage-startswith.js")),
-    tags$head(tags$script(src="delaunator.js")),
-    tags$head(tags$script(src="petm_offline.js")),
     " ",
     conditionalPanel(
       "output.validUser != 'Success'",
