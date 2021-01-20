@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
     
   })
   
-  #' Submit of inspection report
+  #' Submit of inspection 
   observeEvent(input$inputSubmit, {
     session$sendCustomMessage(type = 'action-message',
                               message = "buscando_true")
@@ -160,28 +160,7 @@ shinyServer(function(input, output, session) {
       
       cleanData()
       
-      houseinLoc <- getLocalityData()
-      leafletProxy("map", data = houseinLoc) %>% 
-        addCircleMarkers(
-          radius = 8
-          ,color = sessionData$palForTime(houseinLoc[, time])
-          ,stroke = FALSE
-          ,fillOpacity = .3#ifelse(groupParameters$CERTAINTY_CLOUD == 1, .3, .0)
-        )%>%
-        addCircleMarkers(
-          fillColor = YlOrRd.q(houseinLoc[, probability]),
-          radius = 4,
-          stroke = TRUE,
-          color = "black",
-          weight = .4,
-          fillOpacity = 1,
-          layerId = ~ UNICODE,
-          popup = paste(
-            "<b>", houseinLoc[, UNICODE], "</b><br>",
-            #Cambiando color antes era "blue" ahora es "black"
-            "Ult. visita:","<b style='color: black;'>", houseinLoc[, inspectionText],"</b>"
-          )
-        )
+      UpdateMap()
     }
     
     #toggleModal(session, "inputForm")
@@ -216,16 +195,8 @@ shinyServer(function(input, output, session) {
   # Create the map
   output$map <- renderLeaflet({
    #    
-   leaflet(options = leafletOptions(maxZoom=19,preferCanvas = TRUE)) %>%
-   #      addTiles(urlTemplate = "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-   #               attribution = 'OpenStreetMap contributors'
-   #     ) %>%
-
-   #map<- leaflet() %>%
-      # addTiles(urlTemplate = "//{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
-      #         attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      #         ) %>%
-      addTiles()%>%
+   leaflet() %>%
+    addTiles()%>%
      addProviderTiles(providers$CartoDB.PositronNoLabels)%>%
    
      setView(
@@ -233,26 +204,59 @@ shinyServer(function(input, output, session) {
         lat = mean(-16.39249883),
         zoom = 16
       )
-      
-      
-      #addProviderTiles(providers$Esri.WorldImagery)%>%
-      #addTiles(urlTemplate = "//{s}.tiles.mapbox.com/v3/jcheng.mqap-5ebohr46/{z}/{x}/{y}.png") %>%
-      # addProviderTiles(providers$Stamen.TonerLite, options = providerTileOptions(noWrap = TRUE) ) %>%
-      
-    
   })
   
   # Load the interactive map on click
   observeEvent(input$load, {
+    UpdateMap()
+  })
+  
+  observeEvent(input$map_marker_click, {
+    #http://stackoverflow.com/questions/28938642/marker-mouse-click-event-in-r-leaflet-for-shiny
+    #MAPID_marker_click
+    click<-input$map_marker_click
+    if(is.null(click)) {
+      return()
+    }
+    sessionData$houseId <- click$id
+    output$houseId <- renderText(sessionData$houseId)
+    if(!is.null(sessionData$houseId)) {
+      session$sendCustomMessage(type = 'click-message',
+                                message = toJSON(click, auto_unbox = TRUE, digits = 10))
+    }
     
+  })
+  
+  #' when a user selects a house
+  observeEvent(sessionData$houseId, {
+    if(sessionData$houseId == '') {
+      return()
+    }
     session$sendCustomMessage(type = 'action-message',
                               message = "buscando_true")
     
-     var_locality <<- input$locality
-      if (is.null(var_locality)) {
-       var_locality <<- sessionData$localities
-     }
-     
+    PDLV <- base::strsplit(sessionData$houseId, '\\.')[[1]]
+    updateTextInput(session, "P", value = PDLV[1])
+    updateTextInput(session, "D", value = PDLV[2])
+    updateTextInput(session, "L", value = PDLV[3])
+    updateTextInput(session, "V", value = PDLV[4])
+    
+    PREDICTED_PROBAB <- sessionData$searchdata$probability[sessionData$searchdata$UNICODE==sessionData$houseId]
+    
+    session$sendCustomMessage(type = 'action-message',
+                              message = "buscando_false")
+  })
+  
+  
+  UpdateMap <- function(){
+    session$sendCustomMessage(type = 'action-message',
+                              message = "buscando_true")
+    
+    var_locality <<- input$locality
+    if (is.null(var_locality)) {
+      var_locality <<- sessionData$localities
+    }
+    
     houseinLoc <- getLocalityData()
     
     ## CAUSED PROBLEMS BEFORE, SIMPLE WORKAROUND HERE
@@ -263,18 +267,13 @@ shinyServer(function(input, output, session) {
     listTriangulation <- getTriangulation(copy, dataInspecciones)
     polyDF <- listTriangulation[[1]]
     polyVertices <- listTriangulation[[2]]
-
-    #iBestTri <- which(polyDF$nHouseUninspect == max(polyDF$nHouseUninspect))[1]
-    
-    #searchdata: previously loaded at log in
     
     output$houseId <- renderText({paste("")})
-    output$userMessage <- renderText({paste("")})
-    output$houseProbab <- renderText({paste("")})
     
     leafletMap <- leafletProxy("map", data = houseinLoc) %>% 
       clearMarkerClusters() %>%
       addTiles() %>% 
+      addProviderTiles(providers$CartoDB.PositronNoLabels)%>%
       clearShapes() %>% clearMarkers %>% clearControls() %>%
       setView(
         lng = mean(houseinLoc[, LONGITUDE]),
@@ -332,106 +331,8 @@ shinyServer(function(input, output, session) {
     
     session$sendCustomMessage(type = 'action-message',
                               message = "buscando_false")
-    return(leafletMap)
-  })
-  
-  observeEvent(input$map_marker_click, {
-    #http://stackoverflow.com/questions/28938642/marker-mouse-click-event-in-r-leaflet-for-shiny
-    #MAPID_marker_click
-    click<-input$map_marker_click
-    if(is.null(click)) {
-      return()
-    }
-    sessionData$houseId <- click$id
-    output$houseId <- renderText(sessionData$houseId)
-    output$inspectionUserMessage <- renderText("")
-    if(!is.null(sessionData$houseId)) {
-      session$sendCustomMessage(type = 'click-message',
-                                message = toJSON(click, auto_unbox = TRUE, digits = 10))
-    }
-    
-  })
-  
-  #' when a user selects a house
-  observeEvent(sessionData$houseId, {
-    if(sessionData$houseId == '') {
-      return()
-    }
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_true")
-    
-    PDLV <- base::strsplit(sessionData$houseId, '\\.')[[1]]
-    updateTextInput(session, "P", value = PDLV[1])
-    updateTextInput(session, "D", value = PDLV[2])
-    updateTextInput(session, "L", value = PDLV[3])
-    updateTextInput(session, "V", value = PDLV[4])
-    
-    PREDICTED_PROBAB <- sessionData$searchdata$probability[sessionData$searchdata$UNICODE==sessionData$houseId]
-    
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_false")
-  })
-  
-  observeEvent(input$gps, {
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_true")
-    if (!is.null(input$lat)) {
-      output$userMessage <- renderText({ paste("") })
-      leafletProxy("map") %>% addCircles(
-        color = "blue",
-        radius = 5,      #in meters
-        lng = input$long,
-        lat = input$lat
-        #icon = icon("circle", "fa-.5x")
-      ) %>% setView(lng = input$long,
-                    lat = input$lat,
-                    zoom = 19)
-    } else {
-      output$houseId <- renderText({paste("")})
-      output$userMessage <- renderText({ paste("Location data unavailable") })
-    }
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_false")
-  })
-  
-  observeEvent(input$sim_inspect_house_button, {
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_true")
-    if(sessionData$houseId == ''){
-      session$sendCustomMessage(type = 'action-message',
-                                message = "buscando_false")
-      return();
-    }
-    inputData <- list(
-      'USER_NAME'      = input$username,
-      'GROUP_NAME'     = 'SIN_GRUPO',
-      'DATA_ACTION'    = 'INSPECTION_CLICK',
-      "UNI_CODE"       = sessionData$houseId,
-      "FECHA"          = as.character(input$fecha),
-      "INSPECTION_FLAG"= "inspected",
-      "TEST_DATA"      = ifelse(input$testData, 1, 0)
-      #wishlist: gps lat/lon
-    )
-    
-    #record the model-based probability of infestation
-    PREDICTED_PROBAB <- sessionData$searchdata[UNICODE==inputData$UNI_CODE, probability]
-    PREDICTED_PROBAB <- PREDICTED_PROBAB[1] #in case there are multiple matches - wishlist: raise an error
-    inputData$PREDICTED_PROBAB      <- PREDICTED_PROBAB
-    inputData$PREDICTED_PROBAB_MEAN <- mean(sessionData$searchdata[, probability], na.rm = T) #reference probability for this dataset
-    
-    save_search_data_mysql(inputData, TABLE_NAME = dbGlobalConfig$simulationsTable)
-    
-    riskLevel <- which(sessionData$riskColors == sessionData$palForRisk(PREDICTED_PROBAB))
-    output$houseProbab <- renderText(
-      #(sprintf(  '<div>Riesgo: <font color="%s">%s</font></div>', sessionData$palForRisk(PREDICTED_PROBAB), sessionData$riskNames[riskLevel]))
-      (sprintf(  '<div>Riesgo: <font           >%s</font></div>', sessionData$riskNames[riskLevel]))
-      #sprintf('probab: %.2f', PREDICTED_PROBAB)
-      #sprintf('%s probab: %.2f', inputData$UNI_CODE, PREDICTED_PROBAB)
-    )
-    session$sendCustomMessage(type = 'action-message',
-                              message = "buscando_false")
-    #http://stackoverflow.com/questions/24265980/reset-inputs-button-in-shiny-app
-  })
+    return(leafletMap)  
+  }
   
   getLocalityData <- function(){
     
@@ -654,7 +555,6 @@ shinyServer(function(input, output, session) {
                               message = 'true')
     
     output$houseId <- renderText({paste("")})
-    output$userMessage <- renderText({paste("")})
     output$validUser <- renderText({""})
   })
   #Salir
@@ -673,7 +573,6 @@ shinyServer(function(input, output, session) {
                               message = 'true')
     
     output$houseId <- renderText({paste("")})
-    output$userMessage <- renderText({paste("")})
     output$validUser <- renderText({""})
   })  
   

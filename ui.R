@@ -23,6 +23,7 @@ library(DBI)
 library(shinyBS)
 library(shinythemes)
 library(jsonlite)
+library(shinyjs)#Para activar funcion click
 
 #Codigo externo utilizado
   #Server.R
