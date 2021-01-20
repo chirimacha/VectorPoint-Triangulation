@@ -74,7 +74,6 @@ shinyServer(function(input, output, session) {
       observe({
         session$sendCustomMessage(type = 'confirm-message',
                                   message = "El unicode de la vivienda es obligatorio.")
-        #output$out <- renderPrint(input$midata)
       })
       #Campo Obs_text de unicode equivocado  
     } else if ( input$observaciones == TRUE && input$obs_unicode == 5 && input$obs_text1=="") {
@@ -131,7 +130,7 @@ shinyServer(function(input, output, session) {
       inputData$DATA_ACTION    = 'INSPECTION_NEW'  
       #future: lat and lon during this operation
       
-      #record the model-based probability of infestation
+      #Revisar si la vivienda tiene un unicode adicional
       patron <- "1.[0-9]+.[0-9]+[A-z]?.[0-9]+[A-z]"
       if (grepl(patron, inputData$UNI_CODE)) {
         unicode_aux <- substring(inputData$UNI_CODE, 1,nchar(inputData$UNI_CODE)-1)
@@ -157,13 +156,12 @@ shinyServer(function(input, output, session) {
       
       #Cerrando modal
       toggleModal(session, "inputForm", "close")
-      
+      #Limpiando datos del formulario
       cleanData()
-      
+      #Actualizando mapa
       UpdateMap()
     }
     
-    #toggleModal(session, "inputForm")
     session$sendCustomMessage(type = 'action-message',
                               message = "buscando_false")
   })
@@ -187,8 +185,6 @@ shinyServer(function(input, output, session) {
     
     session$sendCustomMessage(type = 'action-message',
                               message = "buscando_false")
-    #shows the menu ...
-    
   })
   
   ## Interactive Map ##
@@ -247,7 +243,7 @@ shinyServer(function(input, output, session) {
                               message = "buscando_false")
   })
   
-  
+  #Actualizando mapa
   UpdateMap <- function(){
     session$sendCustomMessage(type = 'action-message',
                               message = "buscando_true")
@@ -557,18 +553,13 @@ shinyServer(function(input, output, session) {
     output$houseId <- renderText({paste("")})
     output$validUser <- renderText({""})
   })
+  
   #Salir
   observeEvent(input$quit,{
     updateTextInput(session, "username", value = "")
     updateTextInput(session, "password", value = "")
     
     cleanData()
-    
-    #output$map <- renderLeaflet({
-    #  leaflet() %>%  clearMarkerClusters() %>%
-    #    clearShapes() %>% clearMarkers %>% clearControls()
-    #})
-    
     session$sendCustomMessage(type = 'clear-polygons',
                               message = 'true')
     

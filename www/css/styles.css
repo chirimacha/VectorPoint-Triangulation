@@ -73,9 +73,12 @@ input[type="number"] {
   max-width: 100%;
 }
 
-#enterData {
+#enterData,
+#load {
   margin-top: 5px;
+  width: 100%;
 }
+
 .ver-mas {
   display: none;
 }
@@ -165,33 +168,8 @@ tbody tr:nth-child(2n+1) {
   margin-top: 20px;
 }
 
-#reportUser {
-	margin-top: 5px;
-}
-
 .show-legend {
   display: none;
-}
-
-/*Ocultar span de reconeccion*/
-#shiny-notification-reconnect .shiny-notification-content-text {
-  display: none;
-}
-
-/*Redes*/
-#network {
-  padding: 20px;
-  margin-top: 200px;
-  text-align: center;
-  top: 0px;
-  position: relative;
-}
-#networkOnline,
-#networkOffline {
-    display: block;
-    margin: 20px auto;
-    width: 100%;
-    padding: 10px;
 }
 
 .container-fluid > .col-sm-8 > div:nth-child(2),
@@ -203,6 +181,8 @@ tbody tr:nth-child(2n+1) {
 #quit {
   background-color: red;
   margin-top: 10px;
+  color: #fff;
+  width: 100%;
 }
 
 /*Eliminando boton que no se sabe para que sirve*/
@@ -303,14 +283,12 @@ tbody tr:nth-child(2n+1) {
     transition: width 0.3s linear 0.3s;
     overflow: hidden;
     opacity: 1;
-    height: 194px;
+    height: 162px;
     z-index: 4;
   }
 
   #enterData,
-  #reportUser,
   #quit {
-    width: 100%;
     padding: 10px;
   }
 
@@ -332,10 +310,6 @@ tbody tr:nth-child(2n+1) {
     display: none;
   }
 
-  #load, #gps {
-    width: 48% !important;
-  }
-
   /*Ver mas*/
   .ver-mas {
     display: block;
@@ -344,13 +318,13 @@ tbody tr:nth-child(2n+1) {
     border-radius: 5px 0 0 5px;
     color: #fff;
     background: #357ebd;
-    height: 176px;
+    height: 149px;
     width: 30px;
     position: fixed;
     right: 0;
     top: -1px;
     font-size: 42px;
-    padding-top: 56px;
+    padding-top: 40px;
     transition:right 0.3s linear 0.3s;
     z-index: 5;
   }

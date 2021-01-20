@@ -56,10 +56,7 @@ shinyUI(fluidPage(
       DataEntryForm,
       MapView
       
-    ),
-    textInput("reconnected",NULL),
-    textInput("browser_msg",NULL)
-    
+    )
   )#---mainPanel
 ))
 
