@@ -1,0 +1,12 @@
+name: VectorPoint-Triangulation
+title: VectorPoint-Triangulation
+username:
+account: epi1
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3499525
+bundleId: 4124212
+url: https://epi1.shinyapps.io/VectorPoint-Triangulation/
+when: 1611203067.9188
+asMultiple: FALSE
+asStatic: FALSE
