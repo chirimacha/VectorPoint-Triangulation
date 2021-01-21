@@ -8,6 +8,7 @@ The new functionality of the VectorPoint App draws lines between inspected house
 In the link https://epi1.shinyapps.io/VectorPoint-Triangulation/ a fully-functional installation of VectoPoint App wwith triangles feature added
 
 *Username:demo_t
+
 *Password:123
 
 Instructions for use on a mobile device and a computer are available in the file above named "Instructions for using VectorPoint-triangulation".
